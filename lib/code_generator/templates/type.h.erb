@@ -1,0 +1,18 @@
+#pragma once
+
+class <%= type.name.to_s.camelize %>
+{
+public:
+    <%= type.name.to_s.camelize %>(<%= constractor_parameter(type) %>);
+    virtual ~<%= type.name.to_s.camelize %>();
+
+    <%- type.fields.each do |field| -%>
+    // <%= field.comment %>
+    const <%= to_cpp_type(field.type, field.nullable?) %>& Get<%= field.name.camelize %>() const { return _<%= field.name.camelize(:lower) %>; }
+    <%- end -%>
+
+private:
+    <%- type.fields.each do |field| -%>
+    <%= to_cpp_type(field.type, field.nullable?) %> _<%= field.name.camelize(:lower) %>;
+    <%- end -%>
+}

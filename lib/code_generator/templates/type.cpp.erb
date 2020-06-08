@@ -1,0 +1,10 @@
+#include "<%= type.name.to_s %>.h"
+
+<%= type.name.to_s.camelize %>::<%= type.name.to_s.camelize %>(<%= constractor_parameter(type) %>) :
+    <%= type.fields.map { |field| "_#{field.name.camelize(:lower)}(#{field.name.camelize(:lower)})" }.join(',') %>
+{
+}
+
+<%= type.name.to_s.camelize %>::~<%= type.name.to_s.camelize %>()
+{
+}

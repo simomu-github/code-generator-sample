@@ -1,0 +1,15 @@
+using System.Collections.Generic;
+
+public class <%= type.name.to_s.camelize %>
+{
+    public <%= type.name.to_s.camelize %>(<%= constractor_parameter(type) %>) {
+    <%- type.fields.each do |field| -%>
+        <%= field.name.camelize %> = <%= field.name.camelize(:lower) %>;
+    <%- end -%>
+    }
+
+    <%- type.fields.each do |field| -%>
+    // <%= field.comment %>
+    public <%= to_cs_type(field.type, field.nullable?) %> <%= field.name.camelize %> { get; private set; }
+    <%- end -%>
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+STDOUT.sync = true
+
+require 'bundler'
+Bundler.require
+
+lib_dir = File.expand_path("../../lib/", __FILE__)
+$LOAD_PATH.unshift lib_dir
+
+require 'code_generator'
+
+definitions_dir = ARGV[0]
+definitions_dir ||= './definitions/'
+
+CodeGenerator.generate definitions_dir

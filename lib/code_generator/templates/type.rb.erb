@@ -1,0 +1,11 @@
+require_relative 'type_base'
+
+class <%= type.name.to_s.camelize %> < Type::TypeBase
+<%- type.fields.each do |field| -%>
+  <%- if field.nullable? -%>
+  optional :<%= field.name.to_s %>, <%= to_ruby_type(field.type) %>
+  <%- else -%>
+  required :<%= field.name.to_s %>, <%= to_ruby_type(field.type) %>
+  <%- end -%>
+<%- end -%>
+end
