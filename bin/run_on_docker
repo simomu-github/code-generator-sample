@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+
+EXECUTE_DIR=$(cd $(dirname $0) && pwd)
+
+docker build -f $EXECUTE_DIR/../docker/Dockerfile -t code-generator-sample:latest $EXECUTE_DIR/../
+docker run --rm -e LOCAL_USER_ID=$(id -u $USER) -v $EXECUTE_DIR/../output:/app/output code-generator-sample:latest
