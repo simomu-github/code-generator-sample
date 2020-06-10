@@ -3,9 +3,10 @@ require 'erb'
 module CodeGenerator
   module Generator
     class CsGenerator
-      attr_reader :template_filename
+      attr_reader :types
 
       def output(types)
+        @types = types
         types.each do |type|
           output = ERB.new(File.open('lib/code_generator/templates/type.cs.erb').read, trim_mode: '-')
           File.open("output/#{type.name.to_s.camelize}.cs", 'w').puts(output.result(binding))
@@ -25,7 +26,9 @@ module CodeGenerator
         when Array
           type_name = "List<#{to_cs_type(type.first, false)}>"
         else
-          raise NotImplementedError, "#{type} is not implemented"
+          raise NotImplementedError, "#{type} is not implemented" unless types.any? { |t| t.name == type }
+
+          type_name = type.to_s.camelize
         end
 
         type_name += '?' if nullable

@@ -1,4 +1,5 @@
 require_relative 'type_base'
+<%= requires(type) %>
 
 class <%= type.name.to_s.camelize %> < Type::TypeBase
 <%- type.fields.each do |field| -%>

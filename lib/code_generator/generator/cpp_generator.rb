@@ -3,9 +3,10 @@ require 'erb'
 module CodeGenerator
   module Generator
     class CppGenerator
-      attr_reader :template_filename
+      attr_reader :types
 
       def output(types)
+        @types = types
         types.each do |type|
           output = ERB.new(File.open('lib/code_generator/templates/type.h.erb').read, trim_mode: '-')
           File.open("output/#{type.name}.h", 'w').puts(output.result(binding))
@@ -28,7 +29,9 @@ module CodeGenerator
         when Array
           type_name = "std::vector<#{to_cpp_type(type.first, false)}>"
         else
-          raise NotImplementedError, "#{type} is not implemented"
+          raise NotImplementedError, "#{type} is not implemented" unless types.any? { |t| t.name == type }
+
+          type_name = type.to_s.camelize
         end
 
         type_name = "std::optional<#{type_name}>" if nullable
@@ -39,6 +42,16 @@ module CodeGenerator
         type.fields.map do |field|
           "const #{to_cpp_type(field.type, field.nullable?)}& #{field.name.camelize(:lower)}"
         end.join(', ')
+      end
+
+      def include_headers(type)
+        headers = []
+        headers << '#include <vector>' if type.fields.map { |field| field.type.class }.any? { |klass| klass == Array }
+        headers << '#include <optional>' if type.fields.any?(&:nullable?)
+        type.fields.each do |field|
+          headers << "#include \"#{field.type}.h\"" if types.any? { |t| t.name == field.type }
+        end
+        headers.join("\n")
       end
     end
   end
